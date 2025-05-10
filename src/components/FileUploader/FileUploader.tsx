@@ -1,20 +1,25 @@
-import styles from "./FileUploader.module.css";
 import { useRef, useState } from "react";
+
+import styles from "./FileUploader.module.css";
 import { BiImport, BiExport } from "react-icons/bi";
 import { FiFilePlus, FiFolderPlus } from "react-icons/fi";
+
 import { useFileSystem } from "../../contexts/FileSystemContext";
+import { extractZip } from "../../utils/fileTreeUtils";
 
 export default function FileUploader() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [isDragging, setIsDragging] = useState(false);
-  const { setRawFile } = useFileSystem();
+  const { setRawFile, setFileTree, fileTree } = useFileSystem();
 
   // 파일 등록
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.name.endsWith(".zip")) {
       setRawFile(file);
+      const tree = await extractZip(file);
+      setFileTree(tree);
     }
   };
 
@@ -57,18 +62,20 @@ export default function FileUploader() {
         style={{ display: "none" }}
       />
       <div className={styles.buttonContainer}>
-        <button className={styles.fileUploaderButton} onClick={openFileDialog}>
+        <button className={styles.fileUploaderButton}>
           <FiFilePlus />
         </button>
         <button className={styles.fileUploaderButton}>
           <FiFolderPlus />
         </button>
-        <button className={styles.fileUploaderButton}>
+        <button className={styles.fileUploaderButton} onClick={openFileDialog}>
           <BiImport />
         </button>
         <button
-          className={`${styles.fileUploaderButton} ${styles.exportButton} ${styles.disabled}`}
-          disabled={true}
+          className={`${styles.fileUploaderButton} ${styles.exportButton} ${
+            !fileTree.length ? styles.disabled : ""
+          }`}
+          disabled={!fileTree.length}
         >
           <BiExport />
         </button>

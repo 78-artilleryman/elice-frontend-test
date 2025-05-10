@@ -58,3 +58,83 @@ export const createFileEntry = async (
 export const splitPath = (path: string): string[] => {
   return path.split("/").filter(Boolean);
 };
+
+// 압축 파일 다운로드 할 때 사용하는 유틸 함수
+export const createBlobFromFileTree = async (
+  fileTree: FileEntry[]
+): Promise<Blob> => {
+  const zip = new JSZip();
+
+  const addToZip = async (entry: FileEntry, parentPath: string = "") => {
+    const fullPath = parentPath ? `${parentPath}/${entry.name}` : entry.name;
+
+    if (entry.isDirectory) {
+      // 폴더 생성
+      zip.folder(fullPath);
+      if (entry.children) {
+        for (const child of entry.children) {
+          await addToZip(child, fullPath);
+        }
+      }
+    } else {
+      // 파일 추가
+      if (entry.content) {
+        // 텍스트 파일
+        zip.file(fullPath, entry.content);
+      } else if (entry.imageUrl) {
+        // 이미지 파일
+        try {
+          const response = await fetch(entry.imageUrl);
+          const blob = await response.blob();
+          zip.file(fullPath, blob);
+        } catch (error) {
+          console.error(`Failed to add image file ${fullPath}:`, error);
+        }
+      } else if (entry.file) {
+        // 원본 파일이 있는 경우
+        zip.file(fullPath, entry.file);
+      }
+    }
+  };
+
+  // 파일 트리를 순회하며 ZIP 파일 생성
+  for (const entry of fileTree) {
+    await addToZip(entry);
+  }
+
+  // ZIP 파일 생성 옵션 설정
+  const options: JSZip.JSZipGeneratorOptions = {
+    type: "blob",
+    compression: "DEFLATE",
+    compressionOptions: {
+      level: 9,
+    },
+  };
+
+  return await zip.generateAsync(options);
+};
+
+export const downloadZip = (blob: Blob, filename: string = "download.zip") => {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+export const findNodeByPath = (
+  nodes: FileEntry[],
+  path: string
+): FileEntry | null => {
+  for (const node of nodes) {
+    if (node.path === path) return node;
+    if (node.children) {
+      const found = findNodeByPath(node.children, path);
+      if (found) return found;
+    }
+  }
+  return null;
+};

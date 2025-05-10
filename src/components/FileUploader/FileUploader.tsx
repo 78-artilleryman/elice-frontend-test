@@ -5,13 +5,13 @@ import { BiImport, BiExport } from "react-icons/bi";
 import { FiFilePlus, FiFolderPlus } from "react-icons/fi";
 
 import { useFileSystem } from "../../contexts/FileSystemContext";
-import { extractZip } from "../../utils/zip";
+import { exportZip, extractZip } from "../../utils/zip";
 
 export default function FileUploader() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [isDragging, setIsDragging] = useState(false);
-  const { setRawFile, setFileTree, fileTree } = useFileSystem();
+  const { setRawFile, setFileTree, fileTree, rawFile } = useFileSystem();
 
   // 파일 등록
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,6 +76,11 @@ export default function FileUploader() {
             !fileTree.length ? styles.disabled : ""
           }`}
           disabled={!fileTree.length}
+          onClick={() => {
+            if (fileTree.length > 0 && rawFile) {
+              exportZip(fileTree, rawFile);
+            }
+          }}
         >
           <BiExport />
         </button>

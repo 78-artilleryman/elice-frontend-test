@@ -5,6 +5,7 @@ type FileSystemContextType = {
   setRawFile: React.Dispatch<React.SetStateAction<File | null>>;
   fileTree: FileEntry[];
   setFileTree: React.Dispatch<React.SetStateAction<FileEntry[]>>;
+  updateFileContent: (path: string, newContent: string) => void;
 };
 
 const FileSystemContext = createContext<FileSystemContextType | undefined>(
@@ -21,6 +22,32 @@ export function FileSystemProvider({
 
   console.log(fileTree);
 
+  const updateFileContent = (path: string, newContent: string) => {
+    const updateNodeContent = (nodes: FileEntry[]): FileEntry[] => {
+      return nodes.map((node) => {
+        if (node.path === path) {
+          const blob = new Blob([newContent], { type: "text/plain" });
+          const file = new File([blob], node.name, { type: "text/plain" });
+
+          return {
+            ...node,
+            content: newContent,
+            file: file,
+          };
+        }
+        if (node.children) {
+          return {
+            ...node,
+            children: updateNodeContent(node.children),
+          };
+        }
+        return node;
+      });
+    };
+
+    setFileTree((prevTree) => updateNodeContent(prevTree));
+  };
+
   return (
     <FileSystemContext.Provider
       value={{
@@ -28,6 +55,7 @@ export function FileSystemProvider({
         setRawFile,
         fileTree,
         setFileTree,
+        updateFileContent,
       }}
     >
       {children}

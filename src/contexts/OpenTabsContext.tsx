@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
+import { useFileSystem } from "./FileSystemContext";
+
 import type { FileEntry } from "../types/fileTree.type";
 
 type OpenTabsContextType = {
@@ -9,6 +11,7 @@ type OpenTabsContextType = {
   getContent: (path: string) => string;
   getLanguge: (path: string) => string;
   getImageUrl: (path: string) => string;
+  updateContent: (path: string, newContent: string) => void;
 };
 
 const OpenTabsContext = createContext<OpenTabsContextType | undefined>(
@@ -22,6 +25,8 @@ interface OpenTabsProviderProps {
 export function OpenTabsProvider({ children }: OpenTabsProviderProps) {
   const [openTabs, setOpenTabs] = useState<FileEntry[]>([]);
   const [activeTab, setActiveTab] = useState<string | null>(null);
+
+  const { updateFileContent } = useFileSystem();
 
   const getContent = (path: string): string => {
     const tab = openTabs.find((t) => t.path === path);
@@ -38,6 +43,16 @@ export function OpenTabsProvider({ children }: OpenTabsProviderProps) {
     return tab?.imageUrl || "";
   };
 
+  const updateContent = (path: string, newContent: string) => {
+    setOpenTabs((prevTabs) =>
+      prevTabs.map((tab) =>
+        tab.path === path ? { ...tab, content: newContent } : tab
+      )
+    );
+
+    updateFileContent(path, newContent);
+  };
+
   return (
     <OpenTabsContext.Provider
       value={{
@@ -48,6 +63,7 @@ export function OpenTabsProvider({ children }: OpenTabsProviderProps) {
         getContent,
         getLanguge,
         getImageUrl,
+        updateContent,
       }}
     >
       {children}

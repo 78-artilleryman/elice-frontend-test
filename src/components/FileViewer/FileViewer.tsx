@@ -3,8 +3,14 @@ import MonacoEditor from "../MonacoEditor/MonacoEditor";
 import styles from "./FileViewer.module.css";
 
 export default function FileViewer() {
-  const { openTabs, activeTab, getContent, getLanguge, getImageUrl } =
-    useOpenTabs();
+  const {
+    openTabs,
+    activeTab,
+    getContent,
+    getLanguge,
+    getImageUrl,
+    updateContent,
+  } = useOpenTabs();
 
   if (activeTab && getLanguge(activeTab) === "binary") {
     return (
@@ -19,6 +25,7 @@ export default function FileViewer() {
         monacoLanguage={getLanguge(activeTab)}
         monacoPath={activeTab}
         openTabs={openTabs}
+        updateContent={updateContent}
       />
     );
   }

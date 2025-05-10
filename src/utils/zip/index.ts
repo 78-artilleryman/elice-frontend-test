@@ -1,2 +1,2 @@
 export * from "./extractZip";
-export * from "./exportZip";
+export * from "./downloadFileTreeAsZip";

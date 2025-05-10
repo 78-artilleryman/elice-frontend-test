@@ -5,7 +5,7 @@ import { BiImport, BiExport } from "react-icons/bi";
 import { FiFilePlus, FiFolderPlus } from "react-icons/fi";
 
 import { useFileSystem } from "../../contexts/FileSystemContext";
-import { exportZip, extractZip } from "../../utils/zip";
+import { downloadFileTreeAsZip, extractZip } from "../../utils/zip";
 
 export default function FileUploader() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -78,7 +78,7 @@ export default function FileUploader() {
           disabled={!fileTree.length}
           onClick={() => {
             if (fileTree.length > 0 && rawFile) {
-              exportZip(fileTree, rawFile);
+              downloadFileTreeAsZip(fileTree, rawFile);
             }
           }}
         >

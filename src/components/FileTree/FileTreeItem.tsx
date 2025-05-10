@@ -2,33 +2,20 @@ import { useState } from "react";
 import { useOpenTabs } from "../../contexts/OpenTabsContext";
 
 import type { FileEntry } from "../../types/fileTree.type";
+
 import styles from "./FileTreeItem.module.css";
-import {
-  FaRegFolder,
-  FaRegFileAlt,
-  FaRegFileImage,
-  FaChevronRight,
-  FaChevronDown,
-} from "react-icons/fa";
+import { FaChevronRight, FaChevronDown } from "react-icons/fa";
+
+import { getFileIcon } from "../../utils/fileIcon";
 
 interface FileTreeItemProps {
   node: FileEntry;
 }
 
-export function FileTreeItem({ node }: FileTreeItemProps) {
+export default function FileTreeItem({ node }: FileTreeItemProps) {
   const { openTabs, setOpenTabs, setActiveTab } = useOpenTabs();
 
   const [isExpanded, setIsExpanded] = useState(false);
-
-  const getFileIcon = () => {
-    if (node.isDirectory) {
-      return <FaRegFolder size={15} className={styles.icon} />;
-    }
-    if (node.imageUrl) {
-      return <FaRegFileImage size={14} className={styles.icon} />;
-    }
-    return <FaRegFileAlt size={14} className={styles.icon} />;
-  };
 
   const handleClick = (e: React.MouseEvent) => {
     if (node.isDirectory) {
@@ -60,7 +47,7 @@ export function FileTreeItem({ node }: FileTreeItemProps) {
             )}
           </span>
         )}
-        {getFileIcon()}
+        {getFileIcon({ node, className: styles.icon })}
         <span className={styles.fileName}>{node.name}</span>
       </div>
       {node.isDirectory &&

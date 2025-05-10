@@ -1,6 +1,6 @@
 import { useFileSystem } from "../../contexts/FileSystemContext";
 import styles from "./FileTree.module.css";
-import { FileTreeItem } from "./FileTreeItem";
+import FileTreeItem from "./FileTreeItem";
 
 export default function FileTree() {
   const { fileTree } = useFileSystem();

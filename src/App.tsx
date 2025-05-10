@@ -3,6 +3,7 @@ import styles from "./App.module.css";
 import FileUploader from "./components/FileUploader/FileUploader";
 import EditorTabs from "./components/EditorTabs/EditorTabs";
 import FileTree from "./components/FileTree/FileTree";
+import FileViewer from "./components/FileViewer/FileViewer";
 
 import { FileSystemProvider } from "./contexts/FileSystemContext";
 import { OpenTabsProvider } from "./contexts/OpenTabsContext";
@@ -17,6 +18,7 @@ function App() {
             <FileTree />
             <div className={styles.editor}>
               <EditorTabs />
+              <FileViewer />
             </div>
           </div>
         </OpenTabsProvider>

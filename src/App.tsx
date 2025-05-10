@@ -1,12 +1,15 @@
 import "./App.module.css";
 import FileUploader from "./components/FileUploader/FileUploader";
 import styles from "./App.module.css";
+import { FileSystemProvider } from "./contexts/FileSystemContext";
 
 function App() {
   return (
-    <div className={styles.container}>
-      <FileUploader />
-    </div>
+    <FileSystemProvider>
+      <div className={styles.container}>
+        <FileUploader />
+      </div>
+    </FileSystemProvider>
   );
 }
 

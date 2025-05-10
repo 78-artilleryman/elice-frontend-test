@@ -1,0 +1,6 @@
+.editorContainer {
+  width: 100%;
+  min-width: 800px;
+  flex: 1;
+  margin-top: 20px;
+}

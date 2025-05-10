@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useOpenTabs } from "../../contexts/OpenTabsContext";
+
 import type { FileEntry } from "../../types/fileTree.type";
 import styles from "./FileTreeItem.module.css";
 import {
@@ -14,6 +16,8 @@ interface FileTreeItemProps {
 }
 
 export function FileTreeItem({ node }: FileTreeItemProps) {
+  const { openTabs, setOpenTabs, setActiveTab } = useOpenTabs();
+
   const [isExpanded, setIsExpanded] = useState(false);
 
   const getFileIcon = () => {
@@ -30,6 +34,17 @@ export function FileTreeItem({ node }: FileTreeItemProps) {
     if (node.isDirectory) {
       e.stopPropagation();
       setIsExpanded(!isExpanded);
+    } else {
+      // 이미 열려있는 탭인지 확인
+      const isAlreadyOpen = openTabs.some((tab) => tab.path === node.path);
+
+      // 탭이 열려있지 않다면 추가
+      if (!isAlreadyOpen) {
+        setOpenTabs([...openTabs, node]);
+      }
+
+      // 탭 활성화
+      setActiveTab(node.path);
     }
   };
 

@@ -1,0 +1,45 @@
+import React, { createContext, useContext, useState } from "react";
+import type { FileEntry } from "../types/fileTree.type";
+
+type OpenTabsContextType = {
+  openTabs: FileEntry[];
+  setOpenTabs: React.Dispatch<React.SetStateAction<FileEntry[]>>;
+  activeTab: string | null;
+  setActiveTab: React.Dispatch<React.SetStateAction<string | null>>;
+};
+
+const OpenTabsContext = createContext<OpenTabsContextType | undefined>(
+  undefined
+);
+
+interface OpenTabsProviderProps {
+  children: React.ReactNode;
+}
+
+export function OpenTabsProvider({ children }: OpenTabsProviderProps) {
+  const [openTabs, setOpenTabs] = useState<FileEntry[]>([]);
+  const [activeTab, setActiveTab] = useState<string | null>(null);
+
+  return (
+    <OpenTabsContext.Provider
+      value={{
+        openTabs,
+        setOpenTabs,
+        activeTab,
+        setActiveTab,
+      }}
+    >
+      {children}
+    </OpenTabsContext.Provider>
+  );
+}
+
+export const useOpenTabs = () => {
+  const context = useContext(OpenTabsContext);
+  if (!context) {
+    throw new Error(
+      "OpenTabsProvider 내부에서만 useOpenTabs를 사용할 수 있습니다."
+    );
+  }
+  return context;
+};

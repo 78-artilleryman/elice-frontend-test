@@ -5,7 +5,7 @@ import { BiImport, BiExport } from "react-icons/bi";
 import { FiFilePlus, FiFolderPlus } from "react-icons/fi";
 
 import { useFileSystem } from "../../contexts/FileSystemContext";
-import { extractZip } from "../../utils/fileTreeUtils";
+import { extractZip } from "../../utils/zip";
 
 export default function FileUploader() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);

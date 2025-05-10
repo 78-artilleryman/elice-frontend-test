@@ -1,0 +1,48 @@
+.fileTreeItem {
+  display: flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.fileTreeItem:last-child {
+  border-bottom: none;
+}
+
+.fileTreeItem:hover {
+  background-color: #f0f0f0;
+}
+
+.expandIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+  color: #666666;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.expandIcon:hover {
+  color: #333333;
+}
+
+.icon {
+  margin-right: 6px;
+  color: #666666;
+}
+
+.fileName {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.children {
+  margin-left: 16px;
+}

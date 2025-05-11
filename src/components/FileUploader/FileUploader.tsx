@@ -99,21 +99,28 @@ export default function FileUploader() {
         ref={fileInputRef}
         onChange={handleFileSelect}
         style={{ display: "none" }}
+        aria-label="ZIP 파일 선택"
       />
       <div className={styles.buttonContainer}>
         <button
           className={styles.fileUploaderButton}
           onClick={handleCreateNewFile}
+          aria-label="새 파일 생성"
         >
           <FiFilePlus />
         </button>
         <button
           className={styles.fileUploaderButton}
           onClick={handleCreateNewFolder}
+          aria-label="새 폴더 생성"
         >
           <FiFolderPlus />
         </button>
-        <button className={styles.fileUploaderButton} onClick={openFileDialog}>
+        <button
+          className={styles.fileUploaderButton}
+          onClick={openFileDialog}
+          aria-label="ZIP 파일 업로드"
+        >
           <BiImport />
         </button>
         <button
@@ -126,6 +133,7 @@ export default function FileUploader() {
               downloadFileTreeAsZip(fileTree, rawFile);
             }
           }}
+          aria-label="ZIP 파일 다운로드"
         >
           <BiExport />
         </button>

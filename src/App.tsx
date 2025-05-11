@@ -7,23 +7,28 @@ import FileViewer from "./components/FileViewer/FileViewer";
 
 import { FileSystemProvider } from "./contexts/FileSystemContext";
 import { OpenTabsProvider } from "./contexts/OpenTabsContext";
+import { ContextMenuProvider } from "./contexts/ContextMenuContext";
+import ContextMenu from "./components/FileTree/ContextMenu";
 
 function App() {
   return (
-    <FileSystemProvider>
-      <div className={styles.container}>
-        <FileUploader />
-        <OpenTabsProvider>
-          <div className={styles.content}>
-            <FileTree />
-            <div className={styles.editor}>
-              <EditorTabs />
-              <FileViewer />
+    <ContextMenuProvider>
+      <FileSystemProvider>
+        <div className={styles.container}>
+          <FileUploader />
+          <OpenTabsProvider>
+            <div className={styles.content}>
+              <FileTree />
+              <div className={styles.editor}>
+                <EditorTabs />
+                <FileViewer />
+              </div>
             </div>
-          </div>
-        </OpenTabsProvider>
-      </div>
-    </FileSystemProvider>
+            <ContextMenu />
+          </OpenTabsProvider>
+        </div>
+      </FileSystemProvider>
+    </ContextMenuProvider>
   );
 }
 

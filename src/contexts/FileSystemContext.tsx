@@ -1,11 +1,16 @@
 import React, { createContext, useContext, useState } from "react";
 import type { FileEntry } from "../types/fileTree.type";
+
 type FileSystemContextType = {
   rawFile: File | null;
   setRawFile: React.Dispatch<React.SetStateAction<File | null>>;
   fileTree: FileEntry[];
   setFileTree: React.Dispatch<React.SetStateAction<FileEntry[]>>;
   updateFileContent: (path: string, newContent: string) => void;
+  selectedFolderPath: string;
+  setSelectedFolderPath: React.Dispatch<React.SetStateAction<string>>;
+  isCreatingFile: boolean;
+  setIsCreatingFile: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const FileSystemContext = createContext<FileSystemContextType | undefined>(
@@ -19,6 +24,8 @@ export function FileSystemProvider({
 }) {
   const [rawFile, setRawFile] = useState<File | null>(null);
   const [fileTree, setFileTree] = useState<FileEntry[]>([]);
+  const [selectedFolderPath, setSelectedFolderPath] = useState("");
+  const [isCreatingFile, setIsCreatingFile] = useState(false);
 
   console.log(fileTree);
 
@@ -56,6 +63,10 @@ export function FileSystemProvider({
         fileTree,
         setFileTree,
         updateFileContent,
+        selectedFolderPath,
+        setSelectedFolderPath,
+        isCreatingFile,
+        setIsCreatingFile,
       }}
     >
       {children}

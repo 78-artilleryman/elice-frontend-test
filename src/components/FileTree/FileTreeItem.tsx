@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { useOpenTabs } from "../../contexts/OpenTabsContext";
+import { useFileSystem } from "../../contexts/FileSystemContext";
+
+import FileInput from "./FileInput";
 
 import type { FileEntry } from "../../types/fileTree.type";
 
@@ -7,6 +10,7 @@ import styles from "./FileTreeItem.module.css";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa";
 
 import { getFileIcon } from "../../utils/fileIcon";
+import { sortFileEntries } from "../../utils/fileTree/fileCreateUtils";
 
 interface FileTreeItemProps {
   node: FileEntry;
@@ -14,23 +18,21 @@ interface FileTreeItemProps {
 
 export default function FileTreeItem({ node }: FileTreeItemProps) {
   const { openTabs, setOpenTabs, setActiveTab } = useOpenTabs();
-
+  const { selectedFolderPath, setSelectedFolderPath, isCreatingFile } =
+    useFileSystem();
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // 파일 트리 아이템 클릭 함수
   const handleClick = (e: React.MouseEvent) => {
     if (node.isDirectory) {
       e.stopPropagation();
       setIsExpanded(!isExpanded);
+      setSelectedFolderPath(node.path);
     } else {
-      // 이미 열려있는 탭인지 확인
       const isAlreadyOpen = openTabs.some((tab) => tab.path === node.path);
-
-      // 탭이 열려있지 않다면 추가
       if (!isAlreadyOpen) {
         setOpenTabs([...openTabs, node]);
       }
-
-      // 탭 활성화
       setActiveTab(node.path);
     }
   };
@@ -50,16 +52,17 @@ export default function FileTreeItem({ node }: FileTreeItemProps) {
         {getFileIcon({ node, className: styles.icon })}
         <span className={styles.fileName}>{node.name}</span>
       </div>
-      {node.isDirectory &&
-        isExpanded &&
-        node.children &&
-        node.children.length > 0 && (
-          <div className={styles.children}>
-            {node.children.map((child) => (
+      {node.isDirectory && isExpanded && (
+        <div className={styles.children}>
+          {isCreatingFile && selectedFolderPath === node.path && (
+            <FileInput parentPath={node.path} />
+          )}
+          {node.children &&
+            sortFileEntries(node.children).map((child) => (
               <FileTreeItem key={child.path} node={child} />
             ))}
-          </div>
-        )}
+        </div>
+      )}
     </div>
   );
 }

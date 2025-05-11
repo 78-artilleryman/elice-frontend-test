@@ -11,7 +11,16 @@ export default function FileUploader() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [isDragging, setIsDragging] = useState(false);
-  const { setRawFile, setFileTree, fileTree, rawFile } = useFileSystem();
+  const {
+    setRawFile,
+    setFileTree,
+    fileTree,
+    rawFile,
+    selectedFolderPath,
+    setSelectedFolderPath,
+    isCreatingFile,
+    setIsCreatingFile,
+  } = useFileSystem();
 
   // 파일 등록
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,6 +56,20 @@ export default function FileUploader() {
     }
   };
 
+  const handleCreateNewFile = () => {
+    // 이미 파일 생성 모드라면 취소
+    if (isCreatingFile) {
+      setIsCreatingFile(false);
+      return;
+    }
+    // 파일 생성 모드 시작
+    setIsCreatingFile(true);
+    // 선택된 폴더가 없으면 루트를 선택
+    if (!selectedFolderPath) {
+      setSelectedFolderPath("/");
+    }
+  };
+
   return (
     <div
       className={`${styles.container} ${isDragging ? styles.dragging : ""}`}
@@ -62,7 +85,10 @@ export default function FileUploader() {
         style={{ display: "none" }}
       />
       <div className={styles.buttonContainer}>
-        <button className={styles.fileUploaderButton}>
+        <button
+          className={styles.fileUploaderButton}
+          onClick={handleCreateNewFile}
+        >
           <FiFilePlus />
         </button>
         <button className={styles.fileUploaderButton}>

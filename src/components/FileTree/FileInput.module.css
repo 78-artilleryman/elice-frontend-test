@@ -1,0 +1,22 @@
+.newFileInput {
+  padding: 4px 8px;
+  margin: 2px 0;
+}
+
+.newFileInputTop {
+  order: -1;
+}
+
+.newFileInput input {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+}
+
+.newFileInput input:focus {
+  border-color: #0066cc;
+  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+}

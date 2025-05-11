@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useRef } from "react";
 
 import { useContextMenu } from "../../contexts/ContextMenuContext";
 import { useFileSystem } from "../../contexts/FileSystemContext";
@@ -6,6 +6,7 @@ import { useOpenTabs } from "../../contexts/OpenTabsContext";
 
 import type { FileEntry } from "../../types/fileTree.type";
 import styles from "./ContextMenu.module.css";
+import useOutsideClickClose from "../../hooks/useOutsideClickClose";
 
 export default function ContextMenu() {
   const { contextMenu, setContextMenu } = useContextMenu();
@@ -16,18 +17,14 @@ export default function ContextMenu() {
     setFileTree,
   } = useFileSystem();
   const { openTabs, setOpenTabs, activeTab, setActiveTab } = useOpenTabs();
+  const menuRef = useRef<HTMLUListElement>(null);
 
   // 바깥 클릭/스크롤 시 메뉴 닫기
-  useEffect(() => {
-    if (!contextMenu.visible) return;
-    const close = () => setContextMenu((prev) => ({ ...prev, visible: false }));
-    document.addEventListener("mousedown", close);
-    document.addEventListener("scroll", close, true);
-    return () => {
-      document.removeEventListener("mousedown", close);
-      document.removeEventListener("scroll", close, true);
-    };
-  }, [contextMenu.visible, setContextMenu]);
+  useOutsideClickClose(
+    menuRef,
+    () => setContextMenu((prev) => ({ ...prev, visible: false })),
+    contextMenu.visible
+  );
 
   if (!contextMenu.visible) return null;
 
@@ -87,6 +84,7 @@ export default function ContextMenu() {
         zIndex: 9999,
       }}
       onMouseDown={(e) => e.stopPropagation()}
+      ref={menuRef}
     >
       {contextMenu.isDirectory && (
         <>

@@ -9,6 +9,8 @@ import {
   updateFileTreeRecursively,
 } from "../../utils/fileTree/fileCreateUtils";
 
+import useOutsideClickClose from "../../hooks/useOutsideClickClose";
+
 interface FileInputProps {
   parentPath: string;
   type: "file" | "folder";
@@ -18,6 +20,16 @@ export default function FileInput({ parentPath, type }: FileInputProps) {
   const { setFileTree, setIsCreatingFile, setIsCreatingFolder } =
     useFileSystem();
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // 외부 클릭 시 입력창 닫기
+  useOutsideClickClose(
+    inputRef,
+    () => {
+      if (type === "file") setIsCreatingFile(false);
+      else setIsCreatingFolder(false);
+    },
+    true
+  );
 
   const handleCreate = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const inputValue = inputRef.current?.value.trim();

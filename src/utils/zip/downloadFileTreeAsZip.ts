@@ -1,4 +1,7 @@
-import { createBlobFromFileTree, downloadZip } from "../fileTreeUtils";
+import {
+  createBlobFromFileTree,
+  downloadZip,
+} from "../fileTree/fileCommonUtils";
 import type { FileEntry } from "../../types/fileTree.type";
 
 export const downloadFileTreeAsZip = async (

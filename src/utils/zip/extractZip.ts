@@ -5,7 +5,7 @@ import {
   createFileEntry,
   splitPath,
   sortFileTree,
-} from "../fileTreeUtils";
+} from "../fileTree/fileCommonUtils";
 
 // ZIP 파일을 파싱하여 파일 트리 구조로 변환
 export async function extractZip(file: File): Promise<FileEntry[]> {

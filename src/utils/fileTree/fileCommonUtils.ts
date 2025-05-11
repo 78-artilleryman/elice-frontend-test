@@ -1,6 +1,6 @@
 import JSZip from "jszip";
-import type { FileEntry } from "../types/fileTree.type";
-import { detectLanguageFromPath } from "./detectLanguageFromPath";
+import type { FileEntry } from "../../types/fileTree.type";
+import { detectLanguageFromPath } from "../detectLanguageFromPath";
 
 // 파일 트리 및 ZIP 파일 처리를 위한 유틸리티 함수들
 export const sortFileTree = (tree: FileEntry[]): FileEntry[] => {

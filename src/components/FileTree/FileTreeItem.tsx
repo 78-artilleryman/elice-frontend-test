@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useOpenTabs } from "../../contexts/OpenTabsContext";
 import { useFileSystem } from "../../contexts/FileSystemContext";
-import { useContextMenu } from "../../contexts/ContextMenuContext";
+import { useFileActionMenu } from "../../contexts/FileActionMenuContext";
 
 import FileInput from "./FileInput";
 
@@ -25,7 +25,7 @@ export default function FileTreeItem({ node }: FileTreeItemProps) {
     isCreatingFile,
     isCreatingFolder,
   } = useFileSystem();
-  const { setContextMenu } = useContextMenu();
+  const { setFileActionMenu } = useFileActionMenu();
   const [isExpanded, setIsExpanded] = useState(false);
 
   // 파일 트리 아이템 클릭 함수
@@ -46,7 +46,7 @@ export default function FileTreeItem({ node }: FileTreeItemProps) {
   // 우클릭 시 컨텍스트 메뉴 띄우기
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
-    setContextMenu({
+    setFileActionMenu({
       visible: true,
       x: e.clientX,
       y: e.clientY,

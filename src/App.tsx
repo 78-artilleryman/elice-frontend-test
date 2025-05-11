@@ -4,15 +4,15 @@ import FileUploader from "./components/FileUploader/FileUploader";
 import EditorTabs from "./components/EditorTabs/EditorTabs";
 import FileTree from "./components/FileTree/FileTree";
 import FileViewer from "./components/FileViewer/FileViewer";
+import FileActionMenu from "./components/FileTree/FileActionMenu";
 
 import { FileSystemProvider } from "./contexts/FileSystemContext";
 import { OpenTabsProvider } from "./contexts/OpenTabsContext";
-import { ContextMenuProvider } from "./contexts/ContextMenuContext";
-import ContextMenu from "./components/FileTree/ContextMenu";
+import { FileActionMenuProvider } from "./contexts/FileActionMenuContext";
 
 function App() {
   return (
-    <ContextMenuProvider>
+    <FileActionMenuProvider>
       <FileSystemProvider>
         <div className={styles.container}>
           <FileUploader />
@@ -24,11 +24,11 @@ function App() {
                 <FileViewer />
               </div>
             </div>
-            <ContextMenu />
+            <FileActionMenu />
           </OpenTabsProvider>
         </div>
       </FileSystemProvider>
-    </ContextMenuProvider>
+    </FileActionMenuProvider>
   );
 }
 

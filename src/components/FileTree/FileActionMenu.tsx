@@ -1,16 +1,16 @@
 import { useRef } from "react";
 
-import { useContextMenu } from "../../contexts/ContextMenuContext";
+import { useFileActionMenu } from "../../contexts/FileActionMenuContext";
 import { useFileSystem } from "../../contexts/FileSystemContext";
 import { useOpenTabs } from "../../contexts/OpenTabsContext";
 
 import { deleteRecursively } from "../../utils/fileTree/fileDeleteUtils";
 
-import styles from "./ContextMenu.module.css";
+import styles from "./FileActionMenu.module.css";
 import useOutsideClickClose from "../../hooks/useOutsideClickClose";
 
-export default function ContextMenu() {
-  const { contextMenu, setContextMenu } = useContextMenu();
+export default function FileActionMenu() {
+  const { fileActionMenu, setFileActionMenu } = useFileActionMenu();
   const {
     setIsCreatingFile,
     setIsCreatingFolder,
@@ -23,24 +23,26 @@ export default function ContextMenu() {
   // 바깥 클릭/스크롤 시 메뉴 닫기
   useOutsideClickClose(
     menuRef,
-    () => setContextMenu((prev) => ({ ...prev, visible: false })),
-    contextMenu.visible
+    () => setFileActionMenu((prev) => ({ ...prev, visible: false })),
+    fileActionMenu.visible
   );
 
-  if (!contextMenu.visible) return null;
+  if (!fileActionMenu.visible) return null;
 
   // 삭제 유틸 함수
   const handleDelete = () => {
-    setFileTree((prev) => deleteRecursively(prev, contextMenu.targetPath));
-    setContextMenu((prev) => ({ ...prev, visible: false }));
+    setFileTree((prev) => deleteRecursively(prev, fileActionMenu.targetPath));
+    setFileActionMenu((prev) => ({ ...prev, visible: false }));
 
     const tabIndex = openTabs.findIndex(
-      (t) => t.path === contextMenu.targetPath
+      (t) => t.path === fileActionMenu.targetPath
     );
-    const newTabs = openTabs.filter((t) => t.path !== contextMenu.targetPath);
+    const newTabs = openTabs.filter(
+      (t) => t.path !== fileActionMenu.targetPath
+    );
     setOpenTabs(newTabs);
 
-    if (activeTab === contextMenu.targetPath) {
+    if (activeTab === fileActionMenu.targetPath) {
       if (newTabs.length > 0) {
         // 닫힌 탭의 바로 다음 탭을 활성화하거나, 마지막 탭을 닫은 경우 이전 탭을 활성화
         const newActiveIndex =
@@ -54,14 +56,14 @@ export default function ContextMenu() {
 
   const handleCreateFile = () => {
     setIsCreatingFile(true);
-    setSelectedFolderPath(contextMenu.targetPath);
-    setContextMenu((prev) => ({ ...prev, visible: false }));
+    setSelectedFolderPath(fileActionMenu.targetPath);
+    setFileActionMenu((prev) => ({ ...prev, visible: false }));
   };
 
   const handleCreateFolder = () => {
     setIsCreatingFolder(true);
-    setSelectedFolderPath(contextMenu.targetPath);
-    setContextMenu((prev) => ({ ...prev, visible: false }));
+    setSelectedFolderPath(fileActionMenu.targetPath);
+    setFileActionMenu((prev) => ({ ...prev, visible: false }));
   };
 
   return (
@@ -69,14 +71,14 @@ export default function ContextMenu() {
       className={styles.contextMenu}
       style={{
         position: "fixed",
-        left: contextMenu.x,
-        top: contextMenu.y,
+        left: fileActionMenu.x,
+        top: fileActionMenu.y,
         zIndex: 9999,
       }}
       onMouseDown={(e) => e.stopPropagation()}
       ref={menuRef}
     >
-      {contextMenu.isDirectory && (
+      {fileActionMenu.isDirectory && (
         <>
           <li onClick={handleCreateFile}>새 파일 생성</li>
           <li onClick={handleCreateFolder}>새 폴더 생성</li>

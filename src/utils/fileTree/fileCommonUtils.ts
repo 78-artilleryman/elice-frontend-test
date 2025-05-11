@@ -111,7 +111,7 @@ export const createBlobFromFileTree = async (
     },
   };
 
-  return await zip.generateAsync(options);
+  return (await zip.generateAsync(options)) as Blob;
 };
 
 export const downloadZip = (blob: Blob, filename: string = "download.zip") => {

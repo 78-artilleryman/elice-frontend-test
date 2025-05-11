@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 import type { FileEntry } from "../types/fileTree.type";
 
-type FileSystemContextType = {
+interface FileSystemContextType {
   rawFile: File | null;
   setRawFile: React.Dispatch<React.SetStateAction<File | null>>;
   fileTree: FileEntry[];
@@ -11,7 +11,9 @@ type FileSystemContextType = {
   setSelectedFolderPath: React.Dispatch<React.SetStateAction<string>>;
   isCreatingFile: boolean;
   setIsCreatingFile: React.Dispatch<React.SetStateAction<boolean>>;
-};
+  isCreatingFolder: boolean;
+  setIsCreatingFolder: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 const FileSystemContext = createContext<FileSystemContextType | undefined>(
   undefined
@@ -24,8 +26,9 @@ export function FileSystemProvider({
 }) {
   const [rawFile, setRawFile] = useState<File | null>(null);
   const [fileTree, setFileTree] = useState<FileEntry[]>([]);
-  const [selectedFolderPath, setSelectedFolderPath] = useState("");
+  const [selectedFolderPath, setSelectedFolderPath] = useState<string>("/");
   const [isCreatingFile, setIsCreatingFile] = useState(false);
+  const [isCreatingFolder, setIsCreatingFolder] = useState(false);
 
   console.log(fileTree);
 
@@ -62,11 +65,13 @@ export function FileSystemProvider({
         setRawFile,
         fileTree,
         setFileTree,
-        updateFileContent,
         selectedFolderPath,
         setSelectedFolderPath,
+        updateFileContent,
         isCreatingFile,
         setIsCreatingFile,
+        isCreatingFolder,
+        setIsCreatingFolder,
       }}
     >
       {children}
@@ -77,9 +82,7 @@ export function FileSystemProvider({
 export function useFileSystem() {
   const context = useContext(FileSystemContext);
   if (context === undefined) {
-    throw new Error(
-      "FileSystemProvider 내부에서만 useFileSystem을 사용할 수 있습니다."
-    );
+    throw new Error("useFileSystem must be used within a FileSystemProvider");
   }
   return context;
 }

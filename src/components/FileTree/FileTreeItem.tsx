@@ -18,8 +18,12 @@ interface FileTreeItemProps {
 
 export default function FileTreeItem({ node }: FileTreeItemProps) {
   const { openTabs, setOpenTabs, setActiveTab } = useOpenTabs();
-  const { selectedFolderPath, setSelectedFolderPath, isCreatingFile } =
-    useFileSystem();
+  const {
+    selectedFolderPath,
+    setSelectedFolderPath,
+    isCreatingFile,
+    isCreatingFolder,
+  } = useFileSystem();
   const [isExpanded, setIsExpanded] = useState(false);
 
   // 파일 트리 아이템 클릭 함수
@@ -55,7 +59,10 @@ export default function FileTreeItem({ node }: FileTreeItemProps) {
       {node.isDirectory && isExpanded && (
         <div className={styles.children}>
           {isCreatingFile && selectedFolderPath === node.path && (
-            <FileInput parentPath={node.path} />
+            <FileInput parentPath={node.path} type="file" />
+          )}
+          {isCreatingFolder && selectedFolderPath === node.path && (
+            <FileInput parentPath={node.path} type="folder" />
           )}
           {node.children &&
             sortFileEntries(node.children).map((child) => (

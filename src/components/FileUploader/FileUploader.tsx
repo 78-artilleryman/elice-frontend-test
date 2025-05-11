@@ -20,6 +20,8 @@ export default function FileUploader() {
     setSelectedFolderPath,
     isCreatingFile,
     setIsCreatingFile,
+    isCreatingFolder,
+    setIsCreatingFolder,
   } = useFileSystem();
 
   // 파일 등록
@@ -70,6 +72,20 @@ export default function FileUploader() {
     }
   };
 
+  const handleCreateNewFolder = () => {
+    // 이미 폴더 생성 모드라면 취소
+    if (isCreatingFolder) {
+      setIsCreatingFolder(false);
+      return;
+    }
+    // 폴더 생성 모드 시작
+    setIsCreatingFolder(true);
+    // 선택된 폴더가 없으면 루트를 선택
+    if (!selectedFolderPath) {
+      setSelectedFolderPath("/");
+    }
+  };
+
   return (
     <div
       className={`${styles.container} ${isDragging ? styles.dragging : ""}`}
@@ -91,7 +107,10 @@ export default function FileUploader() {
         >
           <FiFilePlus />
         </button>
-        <button className={styles.fileUploaderButton}>
+        <button
+          className={styles.fileUploaderButton}
+          onClick={handleCreateNewFolder}
+        >
           <FiFolderPlus />
         </button>
         <button className={styles.fileUploaderButton} onClick={openFileDialog}>

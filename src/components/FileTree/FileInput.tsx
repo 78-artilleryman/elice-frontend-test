@@ -1,30 +1,47 @@
 import React, { useState } from "react";
 import { useFileSystem } from "../../contexts/FileSystemContext";
+
+import styles from "./FileInput.module.css";
+
+import { createNewFolder } from "../../utils/fileTree/folderCreateUtils";
 import {
   createNewFile,
   updateFileTreeRecursively,
 } from "../../utils/fileTree/fileCreateUtils";
-import styles from "./FileInput.module.css";
 
 interface FileInputProps {
   parentPath: string;
+  type: "file" | "folder";
 }
 
-export default function FileInput({ parentPath }: FileInputProps) {
-  const { setFileTree, setIsCreatingFile } = useFileSystem();
-  const [newFileName, setNewFileName] = useState("");
+export default function FileInput({ parentPath, type }: FileInputProps) {
+  const { setFileTree, setIsCreatingFile, setIsCreatingFolder } =
+    useFileSystem();
+  const [newName, setNewName] = useState("");
 
-  const handleCreateFile = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && newFileName.trim()) {
-      const newFile = createNewFile(newFileName.trim(), parentPath);
+  const handleCreate = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && newName.trim()) {
+      const newItem =
+        type === "file"
+          ? createNewFile(newName.trim(), parentPath)
+          : createNewFolder(newName.trim(), parentPath);
+
       setFileTree((prev) =>
-        updateFileTreeRecursively(prev, parentPath, newFile)
+        updateFileTreeRecursively(prev, parentPath, newItem)
       );
-      setNewFileName("");
-      setIsCreatingFile(false);
+      setNewName("");
+      if (type === "file") {
+        setIsCreatingFile(false);
+      } else {
+        setIsCreatingFolder(false);
+      }
     } else if (e.key === "Escape") {
-      setNewFileName("");
-      setIsCreatingFile(false);
+      setNewName("");
+      if (type === "file") {
+        setIsCreatingFile(false);
+      } else {
+        setIsCreatingFolder(false);
+      }
     }
   };
 
@@ -32,9 +49,10 @@ export default function FileInput({ parentPath }: FileInputProps) {
     <div className={styles.newFileInput}>
       <input
         type="text"
-        value={newFileName}
-        onChange={(e) => setNewFileName(e.target.value)}
-        onKeyDown={handleCreateFile}
+        value={newName}
+        onChange={(e) => setNewName(e.target.value)}
+        onKeyDown={handleCreate}
+        placeholder={`새 ${type === "file" ? "파일" : "폴더"} 이름 입력`}
         autoFocus
       />
     </div>

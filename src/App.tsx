@@ -12,10 +12,10 @@ import { FileActionMenuProvider } from "./contexts/FileActionMenuContext";
 
 function App() {
   return (
-    <FileActionMenuProvider>
-      <FileSystemProvider>
-        <div className={styles.container}>
-          <FileUploader />
+    <FileSystemProvider>
+      <div className={styles.container}>
+        <FileUploader />
+        <FileActionMenuProvider>
           <OpenTabsProvider>
             <div className={styles.content}>
               <FileTree />
@@ -26,9 +26,9 @@ function App() {
             </div>
             <FileActionMenu />
           </OpenTabsProvider>
-        </div>
-      </FileSystemProvider>
-    </FileActionMenuProvider>
+        </FileActionMenuProvider>
+      </div>
+    </FileSystemProvider>
   );
 }
 

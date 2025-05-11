@@ -4,7 +4,8 @@ import { useContextMenu } from "../../contexts/ContextMenuContext";
 import { useFileSystem } from "../../contexts/FileSystemContext";
 import { useOpenTabs } from "../../contexts/OpenTabsContext";
 
-import type { FileEntry } from "../../types/fileTree.type";
+import { deleteRecursively } from "../../utils/fileTree/fileDeleteUtils";
+
 import styles from "./ContextMenu.module.css";
 import useOutsideClickClose from "../../hooks/useOutsideClickClose";
 
@@ -30,17 +31,6 @@ export default function ContextMenu() {
 
   // 삭제 유틸 함수
   const handleDelete = () => {
-    const deleteRecursively = (
-      nodes: FileEntry[],
-      targetPath: string
-    ): FileEntry[] =>
-      nodes
-        .filter((n: FileEntry) => n.path !== targetPath)
-        .map((n: FileEntry) =>
-          n.children
-            ? { ...n, children: deleteRecursively(n.children, targetPath) }
-            : n
-        );
     setFileTree((prev) => deleteRecursively(prev, contextMenu.targetPath));
     setContextMenu((prev) => ({ ...prev, visible: false }));
 

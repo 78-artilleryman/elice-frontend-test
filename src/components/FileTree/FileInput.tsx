@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import { useFileSystem } from "../../contexts/FileSystemContext";
 
 import styles from "./FileInput.module.css";
@@ -17,26 +17,35 @@ interface FileInputProps {
 export default function FileInput({ parentPath, type }: FileInputProps) {
   const { setFileTree, setIsCreatingFile, setIsCreatingFolder } =
     useFileSystem();
-  const [newName, setNewName] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleCreate = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && newName.trim()) {
+    const inputValue = inputRef.current?.value.trim();
+
+    if (e.key === "Enter" && inputValue) {
       const newItem =
         type === "file"
-          ? createNewFile(newName.trim(), parentPath)
-          : createNewFolder(newName.trim(), parentPath);
+          ? createNewFile(inputValue, parentPath)
+          : createNewFolder(inputValue, parentPath);
 
       setFileTree((prev) =>
         updateFileTreeRecursively(prev, parentPath, newItem)
       );
-      setNewName("");
+
+      if (inputRef.current) {
+        inputRef.current.value = ""; // 초기화
+      }
+
       if (type === "file") {
         setIsCreatingFile(false);
       } else {
         setIsCreatingFolder(false);
       }
     } else if (e.key === "Escape") {
-      setNewName("");
+      if (inputRef.current) {
+        inputRef.current.value = ""; // 초기화
+      }
+
       if (type === "file") {
         setIsCreatingFile(false);
       } else {
@@ -49,8 +58,7 @@ export default function FileInput({ parentPath, type }: FileInputProps) {
     <div className={styles.newFileInput}>
       <input
         type="text"
-        value={newName}
-        onChange={(e) => setNewName(e.target.value)}
+        ref={inputRef}
         onKeyDown={handleCreate}
         placeholder={`새 ${type === "file" ? "파일" : "폴더"} 이름 입력`}
         autoFocus
